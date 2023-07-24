@@ -37,8 +37,8 @@ app.post("/login", async (req, res, next) => {
         let { dataValues } = user
         const generatedToken = signToken({
             id: dataValues.id,
-            email: dataValues.email,
-            role: dataValues.role
+            name: dataValues.name,
+            email: dataValues.email
         })
 
         res.status(200).json({ message: "Login success", token: generatedToken })
@@ -47,8 +47,17 @@ app.post("/login", async (req, res, next) => {
         console.log(err)
         next(err)
     }
-}
-)
+})
+
+app.get("/me", async (req,res,next) => {
+    try {
+        const userInfo = decodeToken(req.headers.token)
+        res.status(200).json(userInfo)
+    } catch (error) {
+        console.log(error)
+        next(error)
+    }
+})
 
 app.use(errorHandler)
 
